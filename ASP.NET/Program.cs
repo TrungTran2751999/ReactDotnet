@@ -27,6 +27,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("connectString")));
 
+builder.Services.AddDbContext<ApplicationMySQLDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("mySQLConnectString"),
+    new MySqlServerVersion(new Version(8, 0, 26))));
+
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IStudentService, StudentService>();
 var _jwtSetting = builder.Configuration.GetSection("JwtSettings");
