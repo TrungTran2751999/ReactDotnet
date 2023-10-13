@@ -12,9 +12,33 @@ public class StudentService : IStudentService
     public StudentService(ApplicationDbContext dbContext){
         this.dbContext = dbContext;
     }
-    public void Create(Student student)
+    public async Task<bool> Create(Student student)
     {
-        throw new NotImplementedException();
+        using(var transaction = dbContext.Database.BeginTransaction())
+        {
+            try{
+                var code = new Code
+                {
+                    code = "oiuoiu",
+                    idSystem = 1
+                };
+                var resultCode = await dbContext.Codes.FirstOrDefaultAsync(item=>item.idSystem == code.idSystem);
+                resultCode.code = code.code;
+                resultCode.idSystem = code.idSystem;
+
+                var maxId = dbContext.Students.Max(item=>item.idSystem);
+                dbContext.Students.Add(student);
+                student.idSystem = maxId+1;
+                
+                dbContext.SaveChanges();
+                transaction.Commit();
+                return true;
+            }catch(Exception e){
+                transaction.Rollback();
+                Console.WriteLine(e);
+                return false;
+            }
+        }
     }
 
     public async Task<List<Student>> GetAll()

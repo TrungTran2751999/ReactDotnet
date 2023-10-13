@@ -7,7 +7,7 @@ namespace app.Services;
 public interface  IStudentService{
     Task<List<Student>> GetAll();
     Task<Student> GetById();
-    void Create(Student student);
+    Task<bool> Create(Student student);
     Task<Student> Update(Student student);
     Task<List<StudentDTO>> GetAllDTO(); 
 }
